@@ -9,13 +9,12 @@
     <style>
         /* General Styles */
         body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: url('images/background4.png') no-repeat center center fixed;
-        background-size: cover;
-        color: #333;
-    }
-
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: url('images/background4.png') no-repeat center center fixed;
+            background-size: cover;
+            color: #333;
+        }
 
         /* Header */
         header {
@@ -47,54 +46,7 @@
             padding: 20px;
         }
 
-        /* Dashboard Section */
-        .dashboard {
-            margin-bottom: 30px;
-            background-color: #fff;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .process {
-            margin-bottom: 15px;
-        }
-        .process h3 {
-            margin: 0;
-            font-size: 16px;
-        }
-        .progress-bar {
-            width: 95%;
-            background-color: #e9ecef;
-            border-radius: 5px;
-            overflow: hidden;
-            margin: 5px 0;
-        }
-        .progress-bar div {
-            height: 15px;
-            background-color: #28a745;
-            text-align: center;
-            color: white;
-            line-height: 15px;
-            font-size: 12px;
-        }
-        .status {
-            font-size: 12px;
-            color: #666;
-        }
-        .download-btn {
-            padding: 5px 8px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-        .download-btn:hover {
-            background-color: #0056b3;
-        }
-
-        /* Solver Selection */
+        /* Solver Section */
         .solver-section {
             background-color: #fff;
             padding: 15px;
@@ -156,39 +108,8 @@
         </nav>
     </header>
 
-    <!-- Main Content -->
+    <!-- Solver Selection Section -->
     <main>
-        <!-- Dashboard Section -->
-        <section class="dashboard">
-            <h2>Dashboard</h2>
-            <div class="process">
-                <h3>Process 1</h3>
-                <div class="progress-bar">
-                    <div style="width: 70%;">70%</div>
-                </div>
-                <p class="status">Status: Optimization in Progress | Phase: Solving</p>
-            </div>
-
-            <div class="process">
-                <h3>Process 2</h3>
-                <div class="progress-bar">
-                    <div style="width: 100%; background-color: #28a745;">100%</div>
-                </div>
-                <p class="status">Status: Complete | Solution Available</p>
-                <button class="download-btn">Download Solution</button>
-            </div>
-
-            <div class="process">
-                <h3>Process 3</h3>
-                <div class="progress-bar">
-                    <div style="width: 0%; background-color: #dc3545;">0%</div>
-                </div>
-                <p class="status">Status: Failed | Data Infeasibility File Available</p>
-                <button class="download-btn">Download Infeasibility File</button>
-            </div>
-        </section>
-
-        <!-- Solver Selection Section -->
         <section class="solver-section">
             <h2>Initialize New Process</h2>
             <label for="solver">Select Optimization Solver:</label>
@@ -217,6 +138,8 @@
     </main>
 
     <script>
+        const apiUrl = "https://y0n7g4lryh.execute-api.eu-north-1.amazonaws.com/dev/process"; // Replace with your API endpoint
+
         function updateFormatInstruction() {
             const solver = document.getElementById('solver').value;
             const instruction = document.getElementById('format-instruction');
@@ -232,7 +155,7 @@
             }
         }
 
-        function initializeProcess() {
+        async function initializeProcess() {
             const solver = document.getElementById('solver').value;
             const apiKey = document.getElementById('apiKey').value;
             const dataFile = document.getElementById('dataFile').files[0];
@@ -241,8 +164,38 @@
                 alert("Please fill in all fields to initialize the process.");
                 return;
             }
-            alert("Process initialized successfully! Your data is being processed.");
-            // Logic to handle the backend API call will go here.
+
+            const reader = new FileReader();
+            reader.onload = async function (e) {
+                try {
+                    const jsonData = JSON.parse(e.target.result);
+
+                    const response = await fetch(apiUrl, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "x-api-key": apiKey
+                        },
+                        body: JSON.stringify({
+                            solver: solver,
+                            data: jsonData
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error("Failed to initialize the process.");
+                    }
+
+                    const result = await response.json();
+                    console.log("Response from API:", result);
+                    alert("Process initialized successfully: " + JSON.stringify(result));
+                } catch (error) {
+                    console.error("Error:", error);
+                    alert("An error occurred: " + error.message);
+                }
+            };
+
+            reader.readAsText(dataFile);
         }
     </script>
 </body>
