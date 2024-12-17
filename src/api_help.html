@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Help</title>
+    <link rel="icon" href="images/icon.png" type="image/png">
+
+    <style>
+        /* General Styles */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: url('images/background6.png') no-repeat center center fixed;
+            background-size: cover;
+            color: #333;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(90deg, #000, #444);
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        header img {
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+        }
+        header a {
+            color: #fff;
+            text-decoration: none;
+            margin-left: 20px;
+        }
+        header a:hover {
+            text-decoration: underline;
+        }
+
+        /* Main Content */
+        main {
+            padding: 20px;
+        }
+        .api-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin: 40px 0;
+        }
+        .api-section button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .api-section button:hover {
+            background-color: #0056b3;
+        }
+        .api-panel {
+            width: 60%;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            margin-left: 20px;
+        }
+
+        /* Tutorial Section */
+        .tutorial {
+            margin-top: 40px;
+        }
+        .tutorial h2 {
+            color: #007bff;
+        }
+        .tutorial p {
+            margin: 10px 0;
+        }
+
+        /* Final Section */
+        .final-section {
+            margin-top: 40px;
+            text-align: center;
+        }
+        .final-section button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .final-section button:hover {
+            background-color: #218838;
+        }
+
+        /* Footer */
+        footer {
+            background-color: rgba(0, 0, 0, 0.9);
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <a href="home.html"><img src="images/icon.png" alt="Mohassin Icon"></a>
+        <nav>
+            <a href="#contact-us">Contact Us</a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- API Key Generator -->
+        <section class="api-section">
+            <div>
+                <button id="generateApiKey">Generate API Key</button>
+            </div>
+            <div class="api-panel" id="apiKeysPanel">
+                <h3>Generated API Keys:</h3>
+                <ul id="apiKeysList" style="list-style: none; padding: 0;"></ul>
+            </div>
+        </section>
+
+        <!-- Tutorial Section -->
+        <section class="tutorial">
+            <h2>How to Use the API Key</h2>
+            <p>1. Go to <a href="monitoring.html">Monitoring</a> to select your optimization solver.</p>
+            <p>2. Use the generated API key to send your data to the solver.</p>
+            <p>3. Ensure your data follows the correct format specified in the solver instructions.</p>
+        </section>
+
+        <!-- Adding Your Solver -->
+        <section class="final-section">
+            <h2>How to Add Your Optimization to the Platform</h2>
+            <p>Share your solver and make it available for researchers to process their data.</p>
+            <button onclick="window.location.href='add_solver.html'">Submit Your Solver</button>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer id="contact-us">
+        <p>Contact us at <a href="mailto:support@mohassin.com">support@mohassin.com</a></p>
+    </footer>
+
+    <script>
+        // Simulate API Key Generation
+        document.getElementById('generateApiKey').addEventListener('click', function() {
+            const apiKey = 'API-' + Math.random().toString(36).substr(2, 10).toUpperCase();
+            const listItem = document.createElement('li');
+            listItem.textContent = apiKey;
+            document.getElementById('apiKeysList').appendChild(listItem);
+        });
+    </script>
+</body>
+</html>

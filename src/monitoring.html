@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoring</title>
+    <link rel="icon" href="images/icon.png" type="image/png">
+
+    <style>
+        /* General Styles */
+        body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: url('images/background4.png') no-repeat center center fixed;
+        background-size: cover;
+        color: #333;
+    }
+
+
+        /* Header */
+        header {
+            background: linear-gradient(90deg, #000, #444);
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            margin-left: 20px;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        /* Main Content */
+        main {
+            padding: 20px;
+        }
+
+        /* Dashboard Section */
+        .dashboard {
+            margin-bottom: 30px;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .process {
+            margin-bottom: 15px;
+        }
+        .process h3 {
+            margin: 0;
+            font-size: 16px;
+        }
+        .progress-bar {
+            width: 95%;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 5px 0;
+        }
+        .progress-bar div {
+            height: 15px;
+            background-color: #28a745;
+            text-align: center;
+            color: white;
+            line-height: 15px;
+            font-size: 12px;
+        }
+        .status {
+            font-size: 12px;
+            color: #666;
+        }
+        .download-btn {
+            padding: 5px 8px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .download-btn:hover {
+            background-color: #0056b3;
+        }
+
+        /* Solver Selection */
+        .solver-section {
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .solver-section label {
+            display: block;
+            margin: 10px 0 5px;
+            font-size: 14px;
+        }
+        .solver-section input, .solver-section select {
+            width: 90%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        #format-instruction {
+            font-size: 12px;
+            color: #555;
+            margin-top: -10px;
+            margin-bottom: 10px;
+        }
+        .initialize-btn {
+            padding: 8px 15px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .initialize-btn:hover {
+            background-color: #218838;
+        }
+
+        /* API Key Reminder */
+        .api-key-reminder {
+            text-align: center;
+            margin-top: 10px;
+        }
+        .api-key-reminder a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .api-key-reminder a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <h1>Process Monitoring</h1>
+        <nav>
+            <a href="home.html">Home</a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Dashboard Section -->
+        <section class="dashboard">
+            <h2>Dashboard</h2>
+            <div class="process">
+                <h3>Process 1</h3>
+                <div class="progress-bar">
+                    <div style="width: 70%;">70%</div>
+                </div>
+                <p class="status">Status: Optimization in Progress | Phase: Solving</p>
+            </div>
+
+            <div class="process">
+                <h3>Process 2</h3>
+                <div class="progress-bar">
+                    <div style="width: 100%; background-color: #28a745;">100%</div>
+                </div>
+                <p class="status">Status: Complete | Solution Available</p>
+                <button class="download-btn">Download Solution</button>
+            </div>
+
+            <div class="process">
+                <h3>Process 3</h3>
+                <div class="progress-bar">
+                    <div style="width: 0%; background-color: #dc3545;">0%</div>
+                </div>
+                <p class="status">Status: Failed | Data Infeasibility File Available</p>
+                <button class="download-btn">Download Infeasibility File</button>
+            </div>
+        </section>
+
+        <!-- Solver Selection Section -->
+        <section class="solver-section">
+            <h2>Initialize New Process</h2>
+            <label for="solver">Select Optimization Solver:</label>
+            <select id="solver" onchange="updateFormatInstruction()">
+                <option value="">-- Select Solver --</option>
+                <option value="hajj">Hajj Pilgrim Scheduling Optimizer</option>
+                <option value="ev">Electric Vehicle Stations Placement Optimizer</option>
+                <option value="mina">Resource Allocation Mina Optimizer</option>
+            </select>
+
+            <p id="format-instruction">Data Format: Select a solver to see format instructions.</p>
+
+            <label for="apiKey">API Key:</label>
+            <input type="text" id="apiKey" placeholder="Enter your API key">
+
+            <label for="dataFile">Attach Data JSON File:</label>
+            <input type="file" id="dataFile" accept=".json">
+
+            <button class="initialize-btn" onclick="initializeProcess()">Initialize Process</button>
+        </section>
+
+        <!-- API Key Reminder -->
+        <div class="api-key-reminder">
+            <p>Don't have an API key? <a href="api_help.html">Go to API Help</a> to generate one.</p>
+        </div>
+    </main>
+
+    <script>
+        function updateFormatInstruction() {
+            const solver = document.getElementById('solver').value;
+            const instruction = document.getElementById('format-instruction');
+
+            if (solver === "hajj") {
+                instruction.innerText = 'Data Format: { "username": "<user>", "email": "<email>", "data": [] }';
+            } else if (solver === "ev") {
+                instruction.innerText = 'Data Format: { "username": "<user>", "station_count": <number>, "locations": [] }';
+            } else if (solver === "mina") {
+                instruction.innerText = 'Data Format: { "resource_type": "<type>", "amount": <number>, "zones": [] }';
+            } else {
+                instruction.innerText = 'Data Format: Select a solver to see format instructions.';
+            }
+        }
+
+        function initializeProcess() {
+            const solver = document.getElementById('solver').value;
+            const apiKey = document.getElementById('apiKey').value;
+            const dataFile = document.getElementById('dataFile').files[0];
+
+            if (!solver || !apiKey || !dataFile) {
+                alert("Please fill in all fields to initialize the process.");
+                return;
+            }
+            alert("Process initialized successfully! Your data is being processed.");
+            // Logic to handle the backend API call will go here.
+        }
+    </script>
+</body>
+</html>

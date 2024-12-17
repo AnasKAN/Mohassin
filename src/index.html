@@ -54,7 +54,7 @@
         }
 
         .form-group input {
-            width: 100%;
+            width: 90%;
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 4px;
@@ -73,6 +73,22 @@
         .login-btn:hover {
             background-color: #0056b3;
         }
+
+        .signup-link {
+            margin-top: 15px;
+            color: #007bff;
+            font-size: 14px;
+        }
+
+        .signup-link a {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -83,6 +99,10 @@
         </h1>
         <form id="loginForm">
             <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" placeholder="Enter your username" required>
+            </div>
+            <div class="form-group">
                 <label for="email">Email:</label>
                 <input type="email" id="email" name="email" placeholder="Enter your email" required>
             </div>
@@ -92,15 +112,23 @@
             </div>
             <button type="submit" class="login-btn">Login</button>
         </form>
+
+        <!-- Sign Up Link -->
+        <div class="signup-link">
+            <p>Don't have an account? <a href="signup.html">Sign Up</a></p>
+        </div>
     </div>
+
     <script>
         document.getElementById('loginForm').addEventListener('submit', function(event) {
             event.preventDefault(); // Prevent form from submitting
+            const username = document.getElementById('username').value;
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
             // Simulate form submission
             console.log("Login Info Submitted:");
+            console.log("Username:", username);
             console.log("Email:", email);
             console.log("Password:", password);
             alert("Login submitted! Check console for details.");
