@@ -1,0 +1,12 @@
+version: 1
+frontend:
+    phases:
+        build:
+            commands:
+                - echo "Building static site"  # Add any other build commands here if needed
+    artifacts:
+        baseDirectory: src
+        files:
+            - '**/*'
+    cache:
+        paths: []
