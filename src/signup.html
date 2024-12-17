@@ -76,30 +76,53 @@
                 <label for="confirmPassword">Confirm Password:</label>
                 <input type="password" id="confirmPassword" name="confirmPassword" required>
             </div>
-            <button type="submit" class="signup-btn">Sign Up</button>
+            <button type="button" class="signup-btn" onclick="signUpUser()">Sign Up</button>
         </form>
         <div class="return-link">
             <p>Return to <a href="index.html">Login</a></p>
         </div>
     </div>
-    
-    <script>
-        document.getElementById('signupForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const username = document.getElementById('username').value;
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
 
-            if (password !== confirmPassword) {
-                alert("Passwords do not match!");
-                return;
-            }
-            // Simulate user redirection to verification page
-            localStorage.setItem('email', email);
-            alert("Account created! Redirecting to verification...");
+    <!-- Amplify Configuration -->
+    <script type="module" src="../amplify-config.js"></script>
+    <script src="https://unpkg.com/aws-amplify@latest/dist/aws-amplify.min.js"></script>
+
+    <script type="module">
+        import { Auth } from 'aws-amplify';
+
+        async function signUpUser() {
+        const username = document.getElementById('username').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+
+        if (!username || !email || !password || !confirmPassword) {
+            alert("Please fill out all fields.");
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            alert("Passwords do not match!");
+            return;
+        }
+
+        try {
+            console.log("Attempting to sign up user:", username);
+            await Auth.signUp({
+                username,
+                password,
+                attributes: { email }
+            });
+            alert("Sign-up successful! Check your email for the verification code.");
+            localStorage.setItem('username', username);
+            console.log("Redirecting to verify.html...");
             window.location.href = "verify.html";
-        });
+        } catch (error) {
+            console.error("Error signing up:", error);
+            alert("Error: " + error.message);
+        }
+    }
+
     </script>
 </body>
 </html>

@@ -103,14 +103,10 @@
                 <input type="text" id="username" name="username" placeholder="Enter your username" required>
             </div>
             <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" placeholder="Enter your email" required>
-            </div>
-            <div class="form-group">
                 <label for="password">Password:</label>
                 <input type="password" id="password" name="password" placeholder="Enter your password" required>
             </div>
-            <button type="submit" class="login-btn">Login</button>
+            <button type="button" class="login-btn" onclick="signInUser()">Login</button>
         </form>
 
         <!-- Sign Up Link -->
@@ -119,20 +115,38 @@
         </div>
     </div>
 
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent form from submitting
-            const username = document.getElementById('username').value;
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+    <!-- Amplify Configuration -->
+    <script type="module" src="../amplify-config.js"></script>
+    <script src="https://unpkg.com/aws-amplify@latest/dist/aws-amplify.min.js"></script>
 
-            // Simulate form submission
-            console.log("Login Info Submitted:");
-            console.log("Username:", username);
-            console.log("Email:", email);
-            console.log("Password:", password);
-            alert("Login submitted! Check console for details.");
-        });
+    <!-- Amplify Auth Login Script -->
+    <script type="module">
+        import { Auth } from 'aws-amplify';
+    
+        async function signInUser() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+    
+            // Check for hardcoded test credentials
+            if (username === "testuser" && password === "123") {
+                alert("Test user login successful! Redirecting to home page.");
+                console.log("Logged in as testuser.");
+                window.location.href = "home.html"; // Redirect to home page
+                return; // Exit the function
+            }
+    
+            // Original Amplify Auth sign-in logic
+            try {
+                const user = await Auth.signIn(username, password);
+                console.log("Logged in user:", user);
+                alert("Login successful! Redirecting to home page.");
+                window.location.href = "home.html"; // Redirect to home page
+            } catch (error) {
+                console.error("Error signing in:", error);
+                alert("Error: " + error.message);
+            }
+        }
     </script>
+    
 </body>
 </html>

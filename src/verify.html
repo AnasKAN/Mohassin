@@ -75,10 +75,14 @@
         <h1>Verify Email</h1>
         <form id="verifyForm">
             <div class="form-group">
-                <label for="code">Enter Verification Code:</label>
-                <input type="text" id="code" name="code" required>
+                <label for="username">Username:</label>
+                <input type="text" id="username" placeholder="Enter your username" required>
             </div>
-            <button type="submit" class="verify-btn">Verify</button>
+            <div class="form-group">
+                <label for="code">Enter Verification Code:</label>
+                <input type="text" id="code" name="code" placeholder="Enter code" required>
+            </div>
+            <button type="button" class="verify-btn" onclick="verifyUser()">Verify</button>
         </form>
 
         <!-- Return to Sign Up Link -->
@@ -87,20 +91,28 @@
         </div>
     </div>
 
-    <script>
-        document.getElementById('verifyForm').addEventListener('submit', function(event) {
-            event.preventDefault();
+    <!-- Amplify Configuration -->
+    <script type="module" src="../amplify-config.js"></script>
+    <script src="https://unpkg.com/aws-amplify@latest/dist/aws-amplify.min.js"></script>
+
+    <!-- Email Verification Script -->
+    <script type="module">
+        import { Auth } from 'aws-amplify';
+
+        async function verifyUser() {
+            const username = document.getElementById('username').value;
             const code = document.getElementById('code').value;
 
-            const correctCode = "123456"; // Replace with backend verification logic
-
-            if (code === correctCode) {
-                alert("Verification successful! Redirecting to login page.");
-                window.location.href = "index.html";
-            } else {
-                alert("Incorrect code. Please try again.");
+            try {
+                // Confirm the sign-up using Amplify Auth
+                await Auth.confirmSignUp(username, code);
+                alert('Verification successful! Redirecting to login page.');
+                window.location.href = "index.html"; // Redirect to login page
+            } catch (error) {
+                console.error('Error verifying user:', error);
+                alert('Error: ' + error.message);
             }
-        });
+        }
     </script>
 </body>
 </html>
