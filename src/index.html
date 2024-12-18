@@ -121,14 +121,17 @@
 
     <!-- Amplify Auth Login Script -->
     <script type="module">
-        import { Auth } from 'aws-amplify';
-    
+        import awsconfig from '../../../src/aws-exports.js';
+        const { Auth, Amplify } = window.aws_amplify;
+
+        Amplify.configure(awsconfig);    
+        
         async function signInUser() {
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
     
             // Check for hardcoded test credentials
-            if (username === "testuser" && password === "123") {
+            if (username === "t" && password === "123") {
                 alert("Test user login successful! Redirecting to home page.");
                 console.log("Logged in as testuser.");
                 window.location.href = "home.html"; // Redirect to home page
@@ -146,6 +149,7 @@
                 alert("Error: " + error.message);
             }
         }
+        window.signInUser = signInUser; 
     </script>
     
 </body>
