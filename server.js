@@ -8,7 +8,7 @@ const multer = require('multer'); // Import multer
 const fs = require('fs');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Middleware for parsing JSON and URL-encoded request bodies
 app.use(bodyParser.json());
@@ -47,12 +47,19 @@ const upload = multer({
 });
 
 // MySQL database connection
+// const db = mysql.createConnection({
+//     host: 'localhost', //  running MySQL locally
+//     user: 'root',      //  MySQL username
+//     password: '6831',  //  MySQL password
+//     database: 'UserDatabase', // Default to the UserDatabase
+// });
 const db = mysql.createConnection({
-    host: 'localhost', // Change if you're not running MySQL locally
-    user: 'root',      // Your MySQL username
-    password: '6831',  // Your MySQL password
-    database: 'UserDatabase', // Default to the UserDatabase
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
 });
+
 
 db.connect((err) => {
     if (err) {
