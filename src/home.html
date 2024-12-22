@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
-    <link rel="icon" href="images/icon.png" type="image/png">
+    <link rel="icon" href="/images/icon.png" type="image/png">
 
     <style>
         /* General Styles */
@@ -122,10 +122,10 @@
         <section>
             <div class="dashboard-box">
                 <h2>Dashboard</h2>
-                <p><strong>API Keys Activated:</strong> 3</p>
-                <p><strong>Key 1:</strong> Start Date: 2024-01-01 | End Date: 2025-01-01</p>
-                <p><strong>Data Being Processed:</strong> 12,500 Requests</p>
-                <p><strong>Server Load:</strong> 75%</p>
+                <p><strong>API Keys Activated:</strong> <span id="apiKeyCount">0</span></p>
+                <ul id="apiKeysList" style="list-style: none; padding: 0;">
+                    <!-- API Keys will be dynamically added here -->
+                </ul>
             </div>
         </section>
 
@@ -135,11 +135,55 @@
             <p>Help other researchers process their data by adding your solver to the platform.</p>
             <button onclick="window.location.href='add_solver.html'">Add Your Solver</button>
         </section>
+        <!-- Logout Button -->
+    <div style="text-align: center; margin-top: 20px;">
+        <button onclick="window.location.href='/logout'" style="
+            padding: 10px 20px;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        ">
+            Logout
+        </button>
+    </div>
     </main>
-
+    
     <!-- Footer -->
     <footer>
         <p>&copy; 2024 Mohassin Platform. All rights reserved. | <a href="#contact-us">Contact Us</a></p>
     </footer>
+
+    
+
+    <script>
+        // Fetch and display API keys in the dashboard
+        function loadDashboardData() {
+            fetch('/get-api-keys')
+                .then((response) => response.json())
+                .then((data) => {
+                    const apiKeysList = document.getElementById('apiKeysList');
+                    const apiKeyCount = document.getElementById('apiKeyCount');
+
+                    apiKeysList.innerHTML = ''; // Clear the list
+                    apiKeyCount.textContent = data.length; // Set the number of active keys
+
+                    data.forEach((key, index) => {
+                        const listItem = document.createElement('li');
+                        listItem.innerHTML = `
+                            <p><strong>Key ${index + 1}:</strong> ${key.apiKey} | <strong>Expires:</strong> ${key.keyExpirationDate}</p>
+                        `;
+                        apiKeysList.appendChild(listItem);
+                    });
+                })
+                .catch((error) => {
+                    console.error('Error fetching dashboard data:', error);
+                });
+        }
+
+        // Load dashboard data on page load
+        loadDashboardData();
+    </script>
 </body>
 </html>

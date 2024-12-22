@@ -133,6 +133,10 @@
                 <ul id="apiKeysList" style="list-style: none; padding: 0;"></ul>
             </div>
         </section>
+        <button id="clearKeysBtn" style="margin-top: 20px; background-color: #dc3545; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+            Clear All API Keys
+        </button>
+    </main>
 
         <!-- Tutorial Section -->
         <section class="tutorial">
@@ -156,12 +160,92 @@
     </footer>
 
     <script>
-        // Simulate API Key Generation
-        document.getElementById('generateApiKey').addEventListener('click', function() {
-            const apiKey = 'API-' + Math.random().toString(36).substr(2, 10).toUpperCase();
-            const listItem = document.createElement('li');
-            listItem.textContent = apiKey;
-            document.getElementById('apiKeysList').appendChild(listItem);
+        // Load all API keys for the user
+        function loadApiKeys() {
+            fetch('/get-api-keys')
+                .then((response) => response.json())
+                .then((data) => {
+                    const apiKeysList = document.getElementById('apiKeysList');
+                    apiKeysList.innerHTML = ''; // Clear the list
+                    data.forEach((key) => {
+                        const listItem = document.createElement('li');
+                        listItem.innerHTML = `
+                            <strong>API Key:</strong> ${key.apiKey}<br>
+                            <strong>Instantiated:</strong> ${key.keyInstantiatingDate}<br>
+                            <strong>Expires:</strong> ${key.keyExpirationDate}<br>
+                            <button onclick="deleteApiKey('${key.apiKey}')">Delete</button>
+                        `;
+                        apiKeysList.appendChild(listItem);
+                    });
+                })
+                .catch((error) => {
+                    console.error('Error fetching API keys:', error);
+                });
+        }
+
+        // Generate a new API key
+        document.getElementById('generateApiKey').addEventListener('click', function () {
+            fetch('/generate-api-key', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    alert('API Key generated successfully!');
+                    loadApiKeys(); // Refresh the API keys list
+                })
+                .catch((error) => {
+                    console.error('Error generating API key:', error);
+                });
+        });
+
+        // Delete an API key
+        function deleteApiKey(apiKey) {
+            fetch('/delete-api-key', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ apiKey }),
+            })
+                .then((response) => {
+                    if (response.ok) {
+                        alert('API Key deleted successfully!');
+                        loadApiKeys(); // Refresh the API keys list
+                    } else {
+                        throw new Error('Failed to delete API key');
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error deleting API key:', error);
+                });
+        }
+
+        // Load API keys on page load
+        loadApiKeys();
+    </script>
+    <script>
+        // Clear all API keys
+        document.getElementById('clearKeysBtn').addEventListener('click', function () {
+            if (confirm('Are you sure you want to clear all generated API keys? This action cannot be undone.')) {
+                fetch('/clear-keys', {
+                    method: 'POST',
+                })
+                    .then((response) => {
+                        if (response.ok) {
+                            alert('All generated API keys have been cleared.');
+                            window.location.reload(); // Reload the page to update the UI
+                        } else {
+                            throw new Error('Failed to clear API keys.');
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error clearing keys:', error);
+                        alert('Error clearing keys. Please try again.');
+                    });
+            }
         });
     </script>
 </body>

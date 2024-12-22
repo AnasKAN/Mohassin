@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mohassin - Login</title>
-    <link rel="icon" href="images/icon.png" type="image/png">
+    <link rel="icon" href="/images/icon.png" type="image/png"> <!-- Absolute path for favicon -->
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-image: url('images/background.png');
+            background-image: url('../images/background.png'); /* Absolute path for background */
             background-size: cover;
             background-repeat: no-repeat;
             margin: 0;
@@ -94,17 +94,13 @@
 <body>
     <div class="login-container">
         <h1>
-            <img src="images/icon2.png" alt="Mohassin Icon">
+            <img src="/images/icon2.png" alt="Mohassin Icon"> <!-- Absolute path for icon -->
             Mohassin
         </h1>
-        <form id="loginForm">
+        <form id="loginForm" action="/login" method="POST">
             <div class="form-group">
                 <label for="username">Username:</label>
                 <input type="text" id="username" name="username" placeholder="Enter your username" required>
-            </div>
-            <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" placeholder="Enter your email" required>
             </div>
             <div class="form-group">
                 <label for="password">Password:</label>
@@ -118,21 +114,5 @@
             <p>Don't have an account? <a href="signup.html">Sign Up</a></p>
         </div>
     </div>
-
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent form from submitting
-            const username = document.getElementById('username').value;
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-
-            // Simulate form submission
-            console.log("Login Info Submitted:");
-            console.log("Username:", username);
-            console.log("Email:", email);
-            console.log("Password:", password);
-            alert("Login submitted! Check console for details.");
-        });
-    </script>
 </body>
 </html>

@@ -117,15 +117,15 @@
         <!-- Display Email and Username -->
         <div class="form-group">
             <label>Email:</label>
-            <input type="email" value="user@example.com" disabled>
+            <input type="email" id="email" value="" disabled>
         </div>
 
         <div class="form-group">
             <label>Username:</label>
-            <input type="text" id="username" value="current_username">
+            <input type="text" id="username" value="">
         </div>
         <div class="button-container">
-            <button class="action-btn" onclick="changeUsername()">Update Username</button>
+            <button class="action-btn" onclick="updateUsername()">Update Username</button>
         </div>
 
         <div class="section-divider"></div>
@@ -136,10 +136,6 @@
             <div class="form-group">
                 <label>New Password:</label>
                 <input type="password" id="newPassword" placeholder="Enter new password">
-            </div>
-            <div class="form-group">
-                <label>Email Verification Code:</label>
-                <input type="text" id="emailCode" placeholder="Enter verification code">
             </div>
             <div class="button-container">
                 <button class="action-btn" onclick="changePassword()">Change Password</button>
@@ -159,32 +155,81 @@
     </main>
 
     <script>
-        // Mock functions for user interactions
-        function changeUsername() {
+        // Fetch and display current user info
+        fetch('/account-info')
+            .then((response) => response.json())
+            .then((data) => {
+                document.getElementById('email').value = data.email;
+                document.getElementById('username').value = data.username;
+            });
+
+        function updateUsername() {
             const newUsername = document.getElementById('username').value;
-            if (newUsername) {
-                alert(`Username updated to: ${newUsername}`);
-            } else {
-                alert('Please enter a valid username.');
-            }
+            fetch('/update-username', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username: newUsername }),
+            }).then((response) => {
+                if (response.ok) {
+                    alert('Username updated successfully!');
+                } else {
+                    alert('Error updating username.');
+                }
+            });
         }
 
         function changePassword() {
-            const newPassword = document.getElementById('newPassword').value;
-            const emailCode = document.getElementById('emailCode').value;
-            if (newPassword && emailCode) {
-                alert('Password changed successfully!');
+    const newPassword = document.getElementById('newPassword').value.trim();
+
+    if (!newPassword) {
+        alert('Please enter a new password.');
+        return;
+    }
+
+    // Log the password to debug
+    console.log('Password to send:', newPassword);
+
+    fetch('/change-password', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ password: newPassword }),
+    })
+        .then((response) => {
+            if (response.ok) {
+                return response.json();
             } else {
-                alert('Please fill in all fields to change your password.');
+                throw new Error('Failed to change password');
             }
-        }
+        })
+        .then((data) => {
+            alert('Password changed successfully! Redirecting to login...');
+            window.location.href = data.redirect;
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            alert('Error changing password. Please try again.');
+        });
+}
+
+
+
 
         function deleteAccount() {
-            const confirmDelete = confirm("Are you sure you want to delete your account? This action is irreversible.");
-            if (confirmDelete) {
-                alert('Account deleted successfully.');
-                // Redirect to homepage or logout
-                window.location.href = 'index.html';
+            if (confirm('Are you sure you want to delete your account? This action cannot be undone!')) {
+                fetch('/delete-account', {
+                    method: 'POST',
+                }).then((response) => {
+                    if (response.ok) {
+                        alert('Account deleted successfully.');
+                        window.location.href = '/';
+                    } else {
+                        alert('Error deleting account.');
+                    }
+                });
             }
         }
     </script>

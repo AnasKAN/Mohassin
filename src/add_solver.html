@@ -89,24 +89,55 @@
         </nav>
     </header>
 
-    <!-- Form Content -->
-    <div class="form-container">
-        <h2>Submit Your Optimization Solver</h2>
-        <form>
-            <div class="form-group">
-                <label for="solverName">Solver Name:</label>
-                <input type="text" id="solverName" placeholder="Enter solver name" required>
-            </div>
-            <div class="form-group">
-                <label for="description">Description:</label>
-                <textarea id="description" rows="4" placeholder="Describe your solver"></textarea>
-            </div>
-            <div class="form-group">
-                <label for="file">Upload Solver File:</label>
-                <input type="file" id="file" accept=".zip,.rar,.tar">
-            </div>
-            <button type="submit">Submit</button>
-        </form>
-    </div>
+    <form class="form-container" id="submitSolverForm">
+        <div class="form-group">
+            <label for="solverName">Solver Name:</label>
+            <input type="text" id="solverName" name="solverName" placeholder="Enter solver name" required>
+        </div>
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" rows="4" placeholder="Describe how the json data your solver accepts: (e.g. {'api_key': '<API_Key>',
+            'data': [[188, 188, 188, 188, 188],
+             [[0, 0, 0, 0, 0, 0, 1, 0],
+              [0, 1, 0, 0, 0, 0, 0, 0]],
+             6,
+             [[0, 0, 0, 0, 0, 0, 1, 0],
+              [0, 0, 0, 0, 0, 0, 1, 0]],
+             [400, 400]]})" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="file">Upload Solver File:</label>
+            <input type="file" id="file" name="file" accept=".py" required>
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+    
+    <script>
+        document.getElementById('submitSolverForm').addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent form submission
+    
+            const formData = new FormData();
+            formData.append('solverName', document.getElementById('solverName').value);
+            formData.append('description', document.getElementById('description').value);
+            formData.append('file', document.getElementById('file').files[0]);
+    
+            fetch('/submit-solver', {
+                method: 'POST',
+                body: formData,
+            })
+                .then((response) => {
+                    if (response.ok) {
+                        alert('Solver submitted successfully!');
+                        document.getElementById('submitSolverForm').reset();
+                    } else {
+                        throw new Error('Error submitting solver.');
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert('Failed to submit solver.');
+                });
+        });
+    </script>
 </body>
 </html>
