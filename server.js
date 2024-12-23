@@ -20,11 +20,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Set up session management
 app.use(
     session({
-        secret: 'my_random_secret_12345', // Replace with a secure secret key
+        secret: 'my_random_secret_12345', //
         resave: false,
         saveUninitialized: true,
     })
 );
+
+
 
 // Ensure the upload directory exists
 const uploadDir = 'uploads/solvers';
@@ -58,7 +60,7 @@ const db = mysql.createConnection({
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    port: process.env.DB_PORT,
+    port: process.env.DB_PORT
 });
 
 db.connect((err) => {
@@ -69,6 +71,16 @@ db.connect((err) => {
     console.log('Connected to the MySQL database.');
 });
 
+//db endpoint
+app.get('/test-db', (req, res) => {
+    db.query('SELECT * FROM Users', (err, results) => {
+        if (err) {
+            console.error('Database connection error:', err);
+            return res.status(500).send('Database connection failed.');
+        }
+        res.json(results);
+    });
+});
 
 // Middleware to protect routes
 app.use((req, res, next) => {
