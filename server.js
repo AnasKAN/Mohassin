@@ -58,8 +58,8 @@ const db = mysql.createConnection({
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
+    port: process.env.DB_PORT,
 });
-
 
 db.connect((err) => {
     if (err) {
@@ -68,6 +68,7 @@ db.connect((err) => {
     }
     console.log('Connected to the MySQL database.');
 });
+
 
 // Middleware to protect routes
 app.use((req, res, next) => {
