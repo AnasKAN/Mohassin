@@ -5,12 +5,11 @@ import os
 from hajj_tafweej_scheduling_optimizer import Tafweej_Scheduling_Optimizer
 
 # Database connection configuration
-
 DB_CONFIG = {
-    "host": os.getenv("DB_HOST", "localhost"),
-    "user": os.getenv("DB_USER", "root"),
-    "password": os.getenv("DB_PASSWORD", "6831"),
-    "database": os.getenv("OPT_DB_NAME", "OptimizationProblemDatabase"),
+    "host": os.getenv("DB_HOST", "my-app-db.cliaouaicgro.eu-north-1.rds.amazonaws.com"),  # Use your Heroku DB_HOST
+    "user": os.getenv("DB_USER", "admin"),  # Use your Heroku DB_USER
+    "password": os.getenv("DB_PASSWORD", "204863Wante#"),  # Use your Heroku DB_PASSWORD
+    "database": os.getenv("OPT_DB_NAME", "OptimizationProblemDatabase"),  # Use your Heroku OPT_DB_NAME
     "cursorclass": pymysql.cursors.DictCursor,
 }
 
