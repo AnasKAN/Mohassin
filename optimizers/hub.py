@@ -1,14 +1,16 @@
 import pymysql
 import time
 import json
+import os
 from hajj_tafweej_scheduling_optimizer import Tafweej_Scheduling_Optimizer
 
 # Database connection configuration
+
 DB_CONFIG = {
-    "host": "localhost",
-    "user": "root",
-    "password": "6831",
-    "database": "OptimizationProblemDatabase",
+    "host": os.getenv("DB_HOST", "localhost"),
+    "user": os.getenv("DB_USER", "root"),
+    "password": os.getenv("DB_PASSWORD", "6831"),
+    "database": os.getenv("OPT_DB_NAME", "OptimizationProblemDatabase"),
     "cursorclass": pymysql.cursors.DictCursor,
 }
 
