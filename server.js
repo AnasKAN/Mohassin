@@ -6,6 +6,7 @@ const mysql = require('mysql2');
 const crypto = require('crypto');
 const multer = require('multer'); // Import multer
 const fs = require('fs');
+require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -55,12 +56,17 @@ const upload = multer({
 //     password: '6831',  //  MySQL password
 //     database: 'UserDatabase', // Default to the UserDatabase
 // });
+
+
+// Debug: Check if environment variables are loaded correctly
+
+
 const db = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    port: process.env.DB_PORT,
+    host: 'my-app-db.cliaouaicgro.eu-north-1.rds.amazonaws.com',
+    user: 'admin',
+    password: '204863Wante#',
+    database: 'UserDatabase',
+    port: 3306
 });
 
 // Connect to the database
@@ -70,16 +76,6 @@ db.connect((err) => {
         return;
     }
     console.log('Connected to the MySQL database.');
-});
-
-// Query to test connection
-db.query('SELECT * FROM Users', (err, results) => {
-    if (err) {
-        console.error('Error querying database:', err.message);
-    } else {
-        console.log('Database query successful, results:', results);
-    }
-    db.end(); // Close the connection after the test
 });
 
 
