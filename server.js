@@ -60,28 +60,28 @@ const db = mysql.createConnection({
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    port: process.env.DB_PORT
+    port: process.env.DB_PORT,
 });
 
+// Connect to the database
 db.connect((err) => {
     if (err) {
-        console.error('Database connection failed:', err.message); // Log the error
+        console.error('Database connection failed:', err.message);
         return;
     }
     console.log('Connected to the MySQL database.');
 });
 
-
-//db endpoint
-app.get('/test-db', (req, res) => {
-    db.query('SELECT * FROM Users', (err, results) => {
-        if (err) {
-            console.error('Database connection error:', err);
-            return res.status(500).send('Database connection failed.');
-        }
-        res.json(results);
-    });
+// Query to test connection
+db.query('SELECT * FROM Users', (err, results) => {
+    if (err) {
+        console.error('Error querying database:', err.message);
+    } else {
+        console.log('Database query successful, results:', results);
+    }
+    db.end(); // Close the connection after the test
 });
+
 
 // Middleware to protect routes
 app.use((req, res, next) => {
