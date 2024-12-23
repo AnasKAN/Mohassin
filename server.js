@@ -65,11 +65,12 @@ const db = mysql.createConnection({
 
 db.connect((err) => {
     if (err) {
-        console.error('Database connection failed:', err);
+        console.error('Database connection failed:', err.message); // Log the error
         return;
     }
     console.log('Connected to the MySQL database.');
 });
+
 
 //db endpoint
 app.get('/test-db', (req, res) => {
