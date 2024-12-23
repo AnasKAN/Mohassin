@@ -1,1 +1,1 @@
-worker: python3 optimizers/hub.py
+worker: python optimizers/hub.py
