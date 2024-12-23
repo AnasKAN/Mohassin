@@ -6,17 +6,19 @@ from hajj_tafweej_scheduling_optimizer import Tafweej_Scheduling_Optimizer
 
 # Database connection configuration
 DB_CONFIG = {
-    "host": os.getenv("DB_HOST", "my-app-db.cliaouaicgro.eu-north-1.rds.amazonaws.com"),  # Use your Heroku DB_HOST
-    "user": os.getenv("DB_USER", "admin"),  # Use your Heroku DB_USER
-    "password": os.getenv("DB_PASSWORD", "204863Wante#"),  # Use your Heroku DB_PASSWORD
-    "database": os.getenv("OPT_DB_NAME", "OptimizationProblemDatabase"),  # Use your Heroku OPT_DB_NAME
+    "host": os.getenv("DB_HOST", "my-app-db.cliaouaicgro.eu-north-1.rds.amazonaws.com"),  
+    "user": os.getenv("DB_USER", "admin"),  
+    "password": os.getenv("DB_PASSWORD", "204863Wante#"),  
+    "database": os.getenv("OPT_DB_NAME", "OptimizationProblemDatabase"), 
     "cursorclass": pymysql.cursors.DictCursor,
 }
 
 def connect_to_database():
     """Establish a connection to the database."""
     try:
+        print("Attempting to connect to the database...")
         connection = pymysql.connect(**DB_CONFIG)
+        print("Database connection successful!")
         return connection
     except Exception as e:
         print(f"Database connection error: {e}")
@@ -26,35 +28,46 @@ def fetch_processing_jobs():
     """Fetch jobs in the 'processing' state."""
     connection = connect_to_database()
     if not connection:
+        print("Failed to connect to the database while fetching jobs.")
         return []
 
     try:
         with connection.cursor() as cursor:
+            print("Fetching jobs in the 'processing' state...")
             query = "SELECT * FROM Job WHERE status = 'processing'"
             cursor.execute(query)
-            return cursor.fetchall()
+            jobs = cursor.fetchall()
+            print(f"Fetched {len(jobs)} jobs.")
+            return jobs
     except Exception as e:
         print(f"Error fetching jobs: {e}")
         return []
     finally:
         connection.close()
 
+
 def validate_api_key(api_key):
     """Validate if the given API key exists in the ApiKeys table."""
     connection = connect_to_database()
     if not connection:
+        print("Failed to connect to the database while validating API key.")
         return False
+
 
     try:
         with connection.cursor() as cursor:
+            print(f"Validating API key: {api_key}")
             query = "SELECT 1 FROM ApiKeys WHERE api_key = %s"
             cursor.execute(query, (api_key,))
-            return cursor.fetchone() is not None
+            is_valid = cursor.fetchone() is not None
+            print(f"API key valid: {is_valid}")
+            return is_valid
     except Exception as e:
         print(f"Error validating API key: {e}")
         return False
     finally:
         connection.close()
+
 
 def update_job_status(job_id, status, result_data=None):
     """Update the job status and result data in the database."""
@@ -116,6 +129,7 @@ def main():
     print("Hub is running and monitoring for new jobs...")
     try:
         while True:
+            print("Checking for jobs...")
             jobs = fetch_processing_jobs()
             if not jobs:
                 print("No jobs in 'processing' state. Retrying in 5 seconds...")
@@ -123,6 +137,7 @@ def main():
                 continue
 
             for job in jobs:
+                print(f"Processing job ID {job['job_id']}...")
                 # Validate the API key
                 input_data = json.loads(job["input_data"])
                 api_key = input_data.get("api_key")
