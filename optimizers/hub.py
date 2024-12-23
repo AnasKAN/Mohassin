@@ -1,8 +1,9 @@
-import pymysql
+
 import time
 import json
 import os
 from hajj_tafweej_scheduling_optimizer import Tafweej_Scheduling_Optimizer
+import pymysql
 
 # Database connection configuration
 DB_CONFIG = {
