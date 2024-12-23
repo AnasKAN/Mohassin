@@ -221,33 +221,42 @@
         }
 
         // Load active processes into the dashboard
-        function loadProcesses() {
-    fetch('/get-processes')
-        .then((response) => response.json())
-        .then((data) => {
-            const processesList = document.getElementById('processesList');
-            processesList.innerHTML = ''; // Clear the list
+        // Map solver IDs to their names
+        const solverNames = {
+            1: 'Hajj Pilgrim Scheduling Optimizer',
+            2: 'Electric Vehicle Stations Placement Optimizer',
+            3: 'Resource Allocation Mina Optimizer',
+        };
 
-            data.forEach((process) => {
-                const processDiv = document.createElement('div');
-                processDiv.classList.add('process');
-                processDiv.innerHTML = `
-                    <h3>Process ID: ${process.job_id}</h3>
-                    <p class="status">
-                        Solver: ${process.solver_name} (ID: ${process.solver_id}) <br>
-                        Status: ${process.status} <br>
-                        Created At: ${process.created_at}
-                    </p>
-                    <button class="download-btn" onclick="downloadResult(${process.job_id})">Download Result</button>
-                    <button class="delete-btn" onclick="deleteProcess(${process.job_id})">Delete Process</button>
-                `;
-                processesList.appendChild(processDiv);
-            });
-        })
-        .catch((error) => {
-            console.error('Error loading processes:', error);
-        });
-}
+        // Load active processes into the dashboard
+        function loadProcesses() {
+            fetch('/get-processes')
+                .then((response) => response.json())
+                .then((data) => {
+                    const processesList = document.getElementById('processesList');
+                    processesList.innerHTML = ''; // Clear the list
+
+                    data.forEach((process) => {
+                        const processDiv = document.createElement('div');
+                        processDiv.classList.add('process');
+                        processDiv.innerHTML = `
+                            <h3>Process ID: ${process.job_id}</h3>
+                            <p class="status">
+                                Solver: ${solverNames[process.solver_id] || 'Unknown Solver'} (ID: ${process.solver_id}) <br>
+                                Status: ${process.status} <br>
+                                Created At: ${new Date(process.created_at).toLocaleString()}
+                            </p>
+                            <button class="download-btn" onclick="downloadResult(${process.job_id})">Download Result</button>
+                            <button class="delete-btn" onclick="deleteProcess(${process.job_id})">Delete Process</button>
+                        `;
+                        processesList.appendChild(processDiv);
+                    });
+                })
+                .catch((error) => {
+                    console.error('Error loading processes:', error);
+                });
+        }
+
 
 
         // Initialize a new process
