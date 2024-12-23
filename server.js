@@ -92,6 +92,10 @@ app.use((req, res, next) => {
 // Serve static files from the 'src' directory
 app.use(express.static(path.join(__dirname, 'src')));
 
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'src', 'index.html'));
+});
+
 // Middleware to check if the user is an admin
 function isAdmin(req, res, next) {
     if (!req.session.user || req.session.user.is_admin !== 1) {
