@@ -52,7 +52,7 @@ async def validate_api_key(api_key: str):
 # Routes
 @app.post("/generate-key")
 def generate_key(user_id: int = 0):
-    """Generate a new API key and store it in the database."""
+    print(f"Generating key for user_id: {user_id}")
     connection = get_db_connection()
     new_key = f"API-{uuid.uuid4().hex[:16].upper()}"  
     instantiating_date = datetime.now().date()  
@@ -71,11 +71,13 @@ def generate_key(user_id: int = 0):
     finally:
         connection.close()
 
+    print(f"Generated API key: {new_key}")
     return {
         "api_key": new_key,
         "key_instantiating_date": instantiating_date.isoformat(),
         "key_expiration_date": expiration_date.isoformat(),
     }
+
 
 
 #######HERE THE JOB ID GENERATION IS DIFFERENT ONLY!
