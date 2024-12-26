@@ -6,7 +6,8 @@ const mysql = require('mysql2');
 const crypto = require('crypto');
 const multer = require('multer'); // Import multer
 const fs = require('fs');
-require('dotenv').config();
+
+// require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -14,6 +15,10 @@ const PORT = process.env.PORT || 3000;
 // Middleware for parsing JSON and URL-encoded request bodies
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// Serve static files from the 'src' directory
+app.use(express.static(path.join(__dirname, 'src')));
+
 
 // // Middleware for parsing form data
 // app.use(bodyParser.urlencoded({ extended: true }));
@@ -89,8 +94,7 @@ app.use((req, res, next) => {
     next();
 });
 
-// Serve static files from the 'src' directory
-app.use(express.static(path.join(__dirname, 'src')));
+
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'src', 'index.html'));
