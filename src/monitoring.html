@@ -277,18 +277,21 @@
                 method: 'POST',
                 body: formData, // Send the form data with the file
             })
-                .then((response) => {
-                    if (response.ok) {
-                        alert('Process initialized successfully!');
-                        loadProcesses(); // Refresh the processes dashboard
-                    } else {
-                        throw new Error('Failed to initialize process.');
-                    }
+                .then((response) => response.text())
+                .then((message) => {
+                    // Notify the user that the process was successfully initialized
+                    alert(message);
+
+                    // Optionally, display real-time feedback
+                    console.log('Triggering job processing...');
+                    monitorJobProcess(); // Add real-time job monitoring if needed
                 })
                 .catch((error) => {
                     console.error('Error initializing process:', error);
+                    alert('Failed to initialize process. Please try again.');
                 });
         }
+
 
         // Delete a process
         function deleteProcess(jobId) {
