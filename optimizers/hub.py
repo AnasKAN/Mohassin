@@ -89,7 +89,7 @@ def get_solver_id(optimizer_name):
     finally:
         connection.close()
 
-def update_job_status(job_id, status, result_data=None):
+def update_job_status(job_id, status, result_data=None, time_to_solve=None):
     """Update the job status, result data, and time_to_solve in the database."""
     connection = connect_to_database()
     if not connection:
@@ -99,18 +99,17 @@ def update_job_status(job_id, status, result_data=None):
         with connection.cursor() as cursor:
             query = """
                 UPDATE Job
-                SET status = %s, result_data = %s, 
-                    time_to_solve = TIMESTAMPDIFF(SECOND, created_at, NOW()),
-                    updated_at = NOW()
+                SET status = %s, result_data = %s, time_to_solve = %s, updated_at = NOW()
                 WHERE job_id = %s
             """
-            cursor.execute(query, (status, json.dumps(result_data) if result_data else None, job_id))
+            cursor.execute(query, (status, json.dumps(result_data) if result_data else None, time_to_solve, job_id))
         connection.commit()
-        print(f"Job {job_id} updated to status '{status}'.")
+        print(f"Job {job_id} updated to status '{status}' with time_to_solve = {time_to_solve}.")
     except Exception as e:
         print(f"Error updating job {job_id}: {e}")
     finally:
         connection.close()
+
 
 def process_job(job):
     """Process a single job using the appropriate optimizer."""
@@ -177,14 +176,21 @@ def main():
                     update_job_status(job["job_id"], "failed", {"error": "Invalid API key"})
                     continue
 
+                # Start timing the job processing
+                start_time = time.time()
+
                 # Process the job
                 result = process_job(job)
 
+                # End timing the job processing
+                end_time = time.time()
+                time_to_solve = int(end_time - start_time)
+
                 # Update the database
                 if result["status"] == "success":
-                    update_job_status(job["job_id"], "finished", result)
+                    update_job_status(job["job_id"], "finished", result, time_to_solve)
                 else:
-                    update_job_status(job["job_id"], "failed", result)
+                    update_job_status(job["job_id"], "failed", result, None)
 
             # Wait before checking for new jobs
             time.sleep(5)
