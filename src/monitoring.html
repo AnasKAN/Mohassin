@@ -184,9 +184,7 @@
             <label for="solver">Select Optimization Solver:</label>
             <select id="solver" onchange="updateFormatInstruction()">
                 <option value="">-- Select Solver --</option>
-                <option value="1">Hajj Pilgrim Scheduling Optimizer</option>
-                <option value="2">Electric Vehicle Stations Placement Optimizer</option>
-                <option value="3">Resource Allocation Mina Optimizer</option>
+                <!-- Dynamic options will be populated here -->
             </select>
 
             <p id="format-instruction">Data Format: Select a solver to see format instructions.</p>
@@ -204,21 +202,44 @@
     </main>
 
     <script>
-        // Update format instructions based on the selected solver
-        function updateFormatInstruction() {
-            const solver = document.getElementById('solver').value;
-            const instruction = document.getElementById('format-instruction');
+        let solvers = [];
 
-            if (solver === "1") {
-                instruction.innerText = 'Data Format: { "api_key": "<api_key>", "data": [#Group Sizes = Tuple[List[int], #Starting Segments = List[List[int]], #Number of Ticks = int, #Segments Connections = List[List[int]], #Road Capacities = List[int]]] }\n(e.g "api_key":"API-EXAMPLE", "data": [[188, 188], [[1, 0], [0, 1]], 6, [[0, 1], [0, 0]], [400, 400]]])';
-            } else if (solver === "2") {
-                instruction.innerText = 'Data Format: { "api_key": "<api_key>", "station_count": <number>, "locations": [] }';
-            } else if (solver === "3") {
-                instruction.innerText = 'Data Format: { "api_key": "<api_key>", "resource_type": "<type>", "amount": <number>, "zones": [] }';
-            } else {
-                instruction.innerText = 'Data Format: Select a solver to see format instructions.';
-            }
+        // Fetch solvers dynamically
+        function fetchSolvers() {
+            fetch('/api/solvers')
+                .then(response => response.json())
+                .then(data => {
+                    solvers = data;
+                    const solverSelect = document.getElementById('solver');
+
+                    // Populate the solver dropdown
+                    solvers.forEach(solver => {
+                        const option = document.createElement('option');
+                        option.value = solver.solver_id;
+                        option.textContent = solver.solver_name;
+                        solverSelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching solvers:', error);
+                });
         }
+
+    // Update format instructions based on the selected solver
+    function updateFormatInstruction() {
+        const solverId = document.getElementById('solver').value;
+        const instruction = document.getElementById('format-instruction');
+
+        const selectedSolver = solvers.find(solver => solver.solver_id === parseInt(solverId));
+        if (selectedSolver) {
+            instruction.innerText = selectedSolver.description || 'No description available.';
+        } else {
+            instruction.innerText = 'Select a solver to see format instructions.';
+        }
+    }
+
+    // Call fetchSolvers on page load
+    document.addEventListener('DOMContentLoaded', fetchSolvers);
 
         // Load active processes into the dashboard
         // Map solver IDs to their names

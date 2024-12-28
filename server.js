@@ -501,6 +501,20 @@ app.post('/initialize-process', upload.single('dataFile'), (req, res) => {
     });
 });
 
+app.get('/api/solvers', (req, res) => {
+    const query = 'SELECT solver_id, solver_name, description FROM Solvers';
+
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).send('Failed to fetch solvers.');
+        }
+
+        res.json(results);
+    });
+});
+
+
 //add solvers
 app.post('/submit-solver', upload.single('file'), (req, res) => {
     if (!req.session.user) {
