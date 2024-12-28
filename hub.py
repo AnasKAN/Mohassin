@@ -7,6 +7,7 @@ import pymysql
 from datetime import datetime
 import importlib
 import json
+import gurobipy
 
 # Database connection configuration
 DB_CONFIG = {
@@ -157,18 +158,33 @@ def process_job(job):
             print('data looks like: ',data)
             print(f"Processing job {job['job_id']} with {class_name} from {module_name}.")
             result = optimizer.optimize(data)  # EVERY RESEARCHER SHOULD HAVE A FUNCTION CALLED OPTIMIZE INSIDE THE CLASS TO OPTIMIZE PASSED DATA
-            print('result looks like: ',type(result))
 
-            # general approach to convert the result to serializable json 
-            result = {"result": str(result)} 
+            # print('result looks like: ',type(result))
+            if isinstance(result[0], gurobipy.Model): #special for gurobi objects only!!
+                model, r, d = result
+                # solution and visualization
+                solution = optimizer.extract_solution_row(model, r, d, input_data=data)
+                visualization = optimizer.visualize_solution(model, r, d, input_data=data)
 
+                return {
+                    "status": "success",
+                    "model_status": model.status,
+                    "decision_variables": solution["group_schedules"],
+                    "visualization": visualization,
+                    "types": f'model {type(model)}, r {type(r)}, {type(d)}'
+                }
 
-            return {
-                "status": "success",
-                "result": result
-            }
+            else:
+                # general approach to convert the result to serializable json 
+                result = {"result": str(result)} 
+
+                return {
+                    "status": "success",
+                    "result": result
+                }
         except Exception as e:
             return {"status": "error", "message": f"Error when solving the instance: {e}"}
+    
     except Exception as e:
         print(f"Error processing job {job['job_id']}: {e}")
         return {"status": "error", "message": str(e)}
