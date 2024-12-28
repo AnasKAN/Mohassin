@@ -482,7 +482,22 @@ app.post('/initialize-process', upload.single('dataFile'), (req, res) => {
             return res.status(500).send('Error initializing process.');
         }
 
-        res.status(200).send('Process initialized successfully.');
+        const jobId = results.insertId;
+
+        // Run hub.py with the job ID
+        exec(`python3 hub.py ${jobId}`, (error, stdout, stderr) => {
+            if (error) {
+                console.error(`Error executing hub.py for job ID ${jobId}: ${error.message}`);
+                return res.status(500).send('Failed to initialize process.');
+            }
+
+            if (stderr) {
+                console.error(`Error output from hub.py for job ID ${jobId}: ${stderr}`);
+            }
+
+            console.log(`hub.py output for job ID ${jobId}: ${stdout}`);
+            res.status(200).send(`Process initialized successfully for Job ID: ${jobId}`);
+        });
     });
 });
 
