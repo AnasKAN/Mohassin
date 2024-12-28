@@ -163,7 +163,28 @@ app.get('/account-info', (req, res) => {
     if (!req.session.user) {
         return res.status(401).send('Unauthorized');
     }
-    res.json({ email: req.session.user.email, username: req.session.user.username });
+
+    const userId = req.session.user.user_id;
+
+    const query = `
+    SELECT email, username FROM UserDatabase.Users WHERE user_id = ?
+    `;
+    db.query(query, [userId], (err, results) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).send('Error fetching account info.');
+        }
+
+        if (results.length > 0) {
+            const user = results[0];
+            res.json({
+                email: user.email,
+                username: user.username,
+            });
+        } else {
+            res.status(404).send('User not found.');
+        }
+    });
 });
 
 // Update username
