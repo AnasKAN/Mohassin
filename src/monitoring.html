@@ -242,29 +242,6 @@
     document.addEventListener('DOMContentLoaded', fetchSolvers);
 
 
-    async function loadSolvers() {
-            const solverDropdown = document.getElementById('solver');
-            try {
-                const response = await fetch('/api-solvers');
-                const solvers = await response.json();
-                alert(solvers)
-                console.log('Solvers fetched:', solvers); // Debug log
-                solvers.forEach((solver) => {
-                    const option = document.createElement('option');
-                    option.value = solver.solver_id;
-                    option.textContent = solver.solver_name;
-                    solverDropdown.appendChild(option);
-                });
-            } catch (error) {
-                alert('not loaded or fetched:', error)
-                console.error('Error loading solvers:', error); // Debug log
-            }
-        }
-
-        // Call loadSolvers after the page loads
-        document.addEventListener('DOMContentLoaded', loadSolvers);
-
-
         // Load active processes into the dashboard
         // Map solver IDs to their names
         const solverNames = {

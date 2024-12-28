@@ -157,13 +157,11 @@ def process_job(job):
             print('data looks like: ',data)
             print(f"Processing job {job['job_id']} with {class_name} from {module_name}.")
             result = optimizer.optimize(data)  # EVERY RESEARCHER SHOULD HAVE A FUNCTION CALLED OPTIMIZE INSIDE THE CLASS TO OPTIMIZE PASSED DATA
-            print('result looks like: ',result)
+            print('result looks like: ',type(result))
 
             # general approach to convert the result to serializable json 
-            if isinstance(result, tuple):
-                result = {"result": list(result)} 
-            elif not isinstance(result, (dict, list, str, int, float, bool, type(None))):
-                result = {"result": str(result)}
+            result = {"result": str(result)} 
+
 
             return {
                 "status": "success",
