@@ -206,7 +206,7 @@
 
         // Fetch solvers dynamically
         function fetchSolvers() {
-            fetch('/api/solvers')
+            fetch('/api-solvers')
                 .then(response => response.json())
                 .then(data => {
                     solvers = data;
@@ -245,7 +245,7 @@
     async function loadSolvers() {
             const solverDropdown = document.getElementById('solver');
             try {
-                const response = await fetch('/api/solvers');
+                const response = await fetch('/api-solvers');
                 const solvers = await response.json();
                 alert(solvers)
                 console.log('Solvers fetched:', solvers); // Debug log
