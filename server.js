@@ -502,7 +502,10 @@ app.post('/initialize-process', upload.single('dataFile'), (req, res) => {
 });
 
 app.get('/api-solvers', (req, res) => {
-    const query = 'SELECT solver_id, solver_name, description FROM Solvers';
+    const query = `
+    SELECT solver_id, solver_name, description 
+    FROM OptimizationProblemDatabase.Solvers
+    `;
 
     db.query(query, (err, results) => {
         if (err) {
