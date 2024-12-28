@@ -231,6 +231,20 @@
                     console.error('Error fetching solvers:', error);
                 });
         }
+        // Update format instructions based on the selected solver
+        function updateFormatInstruction() {
+            const solverId = document.getElementById('solver').value;
+            const instruction = document.getElementById('format-instruction');
+
+            const selectedSolver = solvers.find(solver => solver.solver_id === parseInt(solverId));
+            if (selectedSolver) {
+                instruction.innerText = selectedSolver.description || 'No description available.';
+            } else {
+                instruction.innerText = 'Select a solver to see format instructions.';
+            }
+        }
+        //call fetchSolvers on page load
+        document.addEventListener('DOMContentLoaded', fetchSolvers);
 
         function loadProcesses() {
             fetch('/get-processes')
