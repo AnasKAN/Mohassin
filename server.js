@@ -387,7 +387,7 @@ app.get('/logout', (req, res) => {
     });
 });
 
-//monitoring.html get processes
+// monitoring.html get processes
 app.get('/get-processes', (req, res) => {
     if (!req.session.user) {
         return res.status(401).send('Unauthorized');
@@ -400,6 +400,8 @@ app.get('/get-processes', (req, res) => {
             Job.job_id, 
             Job.status, 
             Job.created_at, 
+            Job.updated_at,
+            Job.time_to_solve,
             Job.solver_id, 
             Solvers.solver_name
         FROM OptimizationProblemDatabase.Job
@@ -417,6 +419,7 @@ app.get('/get-processes', (req, res) => {
         res.json(results);
     });
 });
+
 
 //download
 app.get('/download-result/:jobId', (req, res) => {
