@@ -243,8 +243,6 @@
                 instruction.innerText = 'Select a solver to see format instructions.';
             }
         }
-        //call fetchSolvers on page load
-        document.addEventListener('DOMContentLoaded', fetchSolvers);
 
         function loadProcesses() {
             fetch('/get-processes')
