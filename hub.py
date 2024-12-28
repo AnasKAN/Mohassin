@@ -154,9 +154,11 @@ def process_job(job):
             return {"status": "error", "message": f"Error loading optimizer: {e}"}
 
         try:
+            print('data looks like: ',data)
             print(f"Processing job {job['job_id']} with {class_name} from {module_name}.")
             result = optimizer.optimize(data)  # EVERY RESEARCHER SHOULD HAVE A FUNCTION CALLED OPTIMIZE INSIDE THE CLASS TO OPTIMIZE PASSED DATA
-        
+            print('result looks like: ',result)
+
             # general approach to convert the result to serializable json 
             if isinstance(result, tuple):
                 result = {"result": list(result)} 
