@@ -157,11 +157,26 @@
     <script>
         // Fetch and display current user info
         fetch('/account-info')
-            .then((response) => response.json())
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch account info.');
+                }
+                return response.json();
+            })
             .then((data) => {
-                document.getElementById('email').value = data.email;
-                document.getElementById('username').value = data.username;
+                if (data.email && data.username) {
+                    document.getElementById('email').value = data.email;
+                    document.getElementById('username').value = data.username;
+                } else {
+                    console.error('Invalid account data:', data);
+                    alert('Error loading account information.');
+                }
+            })
+            .catch((error) => {
+                console.error('Error fetching account info:', error);
+                alert('Could not load account information. Please try again later.');
             });
+
 
         function updateUsername() {
             const newUsername = document.getElementById('username').value;
