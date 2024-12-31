@@ -139,95 +139,100 @@
 
         <!-- Tutorial Section -->
         <section class="tutorial">
-            <h2>How to Use the API Key</h2>
-            <p>1. Go to <a href="monitoring.html">Monitoring</a> to select your optimization solver.</p>
-            <p>2. Use the generated API key to send your data to the solver.</p>
-            <p>3. Ensure your data follows the correct format specified in the solver instructions.</p>
-
-            <h3>Base URL</h3>
-            <p><strong>Base URL:</strong> <code>https://fastapi-mohassin-a6dc3af681d9.herokuapp.com/</code></p>
-
-            <h3>JavaScript Example</h3>
-            <pre>
-<code>const axios = require('axios');
-
-// Base URL for the FastAPI server
-const BASE_URL = "https://fastapi-mohassin-a6dc3af681d9.herokuapp.com";
-
-// Function to submit a job
-async function submitJob(apiKey, optimizerId, jobData) {
-    try {
-        const payload = {
-            optimizer_id: optimizerId,
-            data: jobData
-        };
-
-        const response = await axios.post(`${BASE_URL}/submit-job?api_key=${apiKey}`, payload, {
-            headers: {
-                "Content-Type": "application/json"
+            <h2 style="text-align: center; color: #007bff; margin-bottom: 20px;">How to Use the API Key</h2>
+            <p style="margin: 10px 0;">1. Go to <a href="monitoring.html" style="color: #007bff; text-decoration: underline;">Monitoring</a> to select your optimization solver.</p>
+            <p style="margin: 10px 0;">2. Use the generated API key to send your data to the solver.</p>
+            <p style="margin: 10px 0;">3. Ensure your data follows the correct format specified in the solver instructions.</p>
+        
+            <!-- Base URL -->
+            <div class="tutorial-section">
+                <h3>Base URL</h3>
+                <p style="background-color: #f8f9fa; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                <code>https://fastapi-mohassin-a6dc3af681d9.herokuapp.com/</code>
+                </p>
+            </div>
+        
+            <!-- JavaScript Example -->
+            <div class="tutorial-section">
+                <h3>JavaScript Example</h3>
+                <p>Use the following example to integrate the API with JavaScript:</p>
+                <pre style="background-color: #f8f9fa; padding: 15px; border: 1px solid #ddd; border-radius: 5px; overflow-x: auto;">
+        <code>const axios = require('axios');
+        
+        // Base URL for the FastAPI server
+        const BASE_URL = "https://fastapi-mohassin-a6dc3af681d9.herokuapp.com";
+        
+        // Function to submit a job
+        async function submitJob(apiKey, optimizerId, jobData) {
+            try {
+                const payload = {
+                    optimizer_id: optimizerId,
+                    data: jobData
+                };
+        
+                const response = await axios.post(`${BASE_URL}/submit-job?api_key=${apiKey}`, payload, {
+                    headers: { "Content-Type": "application/json" }
+                });
+        
+                console.log("Job submitted successfully:", response.data);
+                return response.data.job_id;
+            } catch (error) {
+                console.error("Failed to submit job:", error.response ? error.response.data : error.message);
+                return null;
             }
-        });
-
-        console.log("Job submitted successfully:", response.data);
-        return response.data.job_id;
-    } catch (error) {
-        console.error("Failed to submit job:", error.response ? error.response.data : error.message);
-        return null;
-    }
-}
-
-// Function to fetch job results
-async function getJobResult(apiKey, jobId) {
-    try {
-        const response = await axios.get(`${BASE_URL}/job-result/${jobId}?api_key=${apiKey}`);
-        console.log("Job result fetched:", JSON.stringify(response.data, null, 4));
-        return response.data;
-    } catch (error) {
-        console.error("Failed to fetch job result:", error.response ? error.response.data : error.message);
-        return null;
-    }
-}
-
-// Main function to test the workflow
-(async function main() {
-    // Step 1: Put your API key
-    const apiKey = "API-906D553E4107450D";
-
-    // Step 2: Submit the job
-    const optimizerId = 1;
-    const jobData = {
-        example_param: "value" // Replace with actual data
-    };
-
-    const jobId = await submitJob(apiKey, optimizerId, jobData);
-    if (!jobId) {
-        console.error("Exiting due to job submission failure.");
-        return;
-    }
-
-    // Step 3: Fetch job results
-    await getJobResult(apiKey, jobId);
-})();
-</code>
-            </pre>
-
-            <h3>cURL Usage (Windows)</h3>
-            <p><strong>Submitting a Job:</strong></p>
-            <pre>
-<code>curl.exe -X POST "https://fastapi-mohassin-a6dc3af681d9.herokuapp.com/submit-job?api_key=<put your api key here>" `
--H "Content-Type: application/json" `
---data "@C:\path\to\payload.json"
-</code>
-            </pre>
-            <p><strong>Fetching Job Results:</strong></p>
-            <pre>
-<code>curl.exe -X GET "https://fastapi-mohassin-a6dc3af681d9.herokuapp.com/job-result/<put your job id here>?api_key=<put your api key here>"
-</code>
-            </pre>
-
-            <h3>Python Tutorial (Google Colab)</h3>
-            <p>Try out the API in Python using <a href="https://colab.research.google.com/drive/1yn9-xfeQH0yan_UbGqbz-8hdVhEFb55H?usp=sharing" target="_blank">this Google Colab notebook</a>.</p>
+        }
+        
+        // Function to fetch job results
+        async function getJobResult(apiKey, jobId) {
+            try {
+                const response = await axios.get(`${BASE_URL}/job-result/${jobId}?api_key=${apiKey}`);
+                console.log("Job result fetched:", JSON.stringify(response.data, null, 4));
+                return response.data;
+            } catch (error) {
+                console.error("Failed to fetch job result:", error.response ? error.response.data : error.message);
+                return null;
+            }
+        }
+        
+        // Main function to test the workflow
+        (async function main() {
+            const apiKey = "API-906D553E4107450D";
+            const optimizerId = 1;
+            const jobData = { example_param: "value" };
+        
+            const jobId = await submitJob(apiKey, optimizerId, jobData);
+            if (!jobId) return;
+        
+            await getJobResult(apiKey, jobId);
+        })();
+        </code>
+                </pre>
+            </div>
+        
+            <!-- cURL Usage -->
+            <div class="tutorial-section">
+                <h3>cURL Usage (Windows)</h3>
+                <p><strong>Submitting a Job:</strong></p>
+                <pre style="background-color: #f8f9fa; padding: 10px; border: 1px solid #ddd; border-radius: 5px; overflow-x: auto;">
+        <code>curl.exe -X POST "https://fastapi-mohassin-a6dc3af681d9.herokuapp.com/submit-job?api_key=<your-api-key>" `
+        -H "Content-Type: application/json" `
+        --data "@C:\path\to\payload.json"
+        </code>
+                </pre>
+                <p><strong>Fetching Job Results:</strong></p>
+                <pre style="background-color: #f8f9fa; padding: 10px; border: 1px solid #ddd; border-radius: 5px; overflow-x: auto;">
+        <code>curl.exe -X GET "https://fastapi-mohassin-a6dc3af681d9.herokuapp.com/job-result/<job-id>?api_key=<your-api-key>"
+        </code>
+                </pre>
+            </div>
+        
+            <!-- Python Tutorial -->
+            <div class="tutorial-section">
+                <h3>Python Tutorial (Google Colab)</h3>
+                <p>Test the API with Python using <a href="https://colab.research.google.com/drive/1yn9-xfeQH0yan_UbGqbz-8hdVhEFb55H?usp=sharing" target="_blank" style="color: #007bff; text-decoration: underline;">this Google Colab notebook</a>.</p>
+            </div>
         </section>
+        
 
         <!-- Adding Your Solver -->
         <section class="final-section">
